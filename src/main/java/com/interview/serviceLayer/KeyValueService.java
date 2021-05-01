@@ -1,5 +1,7 @@
 package com.interview.serviceLayer;
 
+import java.util.HashMap;
+
 import com.interview.DoaLayer.KeyvalueDoa;
 import com.interview.Exception.KeyAlreadyPresentException;
 import com.interview.Exception.KeyNotPresentException;
@@ -12,7 +14,14 @@ public class KeyValueService {
 		doa = new KeyvalueDoa();
 		
 	}
+	
+	public KeyValueService(HashMap<String, String> cache) {
+		super();
+		doa = new KeyvalueDoa(cache);
+		
+	}
 
+	
 	private KeyvalueDoa doa ;
 	
 	public KeyValue getKey(String key) throws KeyNotPresentException {
@@ -46,5 +55,9 @@ public class KeyValueService {
 			throw new KeyNotPresentException(key);
 		}
 		else return doa.addorupdateordeletekeyValue(key, null);
+	}
+	
+	public HashMap<String,String> getcache(){
+		return doa.getCache();
 	}
 }

@@ -13,7 +13,15 @@ import com.interview.Models.KeyValue;
 
 
 public class KeyvalueDoa {
-  public KeyvalueDoa() {
+
+
+public KeyvalueDoa(HashMap<String, String> cache) {
+		super();
+		this.cache = cache;
+		this.context = properties.test;
+	}
+
+public KeyvalueDoa() {
 		this.cache = new HashMap<String,String>();
 		
 		File myObj = new File(properties.filelocation);
@@ -23,13 +31,16 @@ public class KeyvalueDoa {
 		        String data = myReader.nextLine();
 		       
 		        String[] keyval = data.split(","); 
-		        System.out.println("Loading into cacahe "+keyval[0]+" "+keyval[1]);
-		        
-		        cache.put(keyval[0], keyval[1]);
+		       if(keyval.length==2) {
+		    	   System.out.println("Loading into cacahe "+keyval[0]+" "+keyval[1]);
+			        
+			        cache.put(keyval[0], keyval[1]);
+		       }
+		      
 		      }
 		      myReader.close();
 
-			
+			this.context=properties.prod;
 		} catch (FileNotFoundException e) {
 			
 			e.printStackTrace();
@@ -39,7 +50,7 @@ public class KeyvalueDoa {
 
 HashMap<String,String> cache;
 ConstantProperties properties;  
-
+String context ;
 public KeyValue getKey(String key) {
 	
 	if(cache.containsKey(key) && !cache.get(key).equals(properties.delete)) {
@@ -62,11 +73,17 @@ public KeyValue addorupdateordeletekeyValue(String k,String v) {
         BufferedWriter bw = new BufferedWriter(fileWritter);
         
         if(v==null) {
-        	bw.write(k+","+properties.delete);
+        	if(this.context.equals(properties.prod)) {
+        		bw.write(k+","+properties.delete);
+        	}
+        	
         	cache.put(k, properties.delete);
         }
         else {
-        	bw.write(k+","+v);
+        	if(this.context.equals(properties.prod)) {
+        		bw.write(k+","+v);
+        	}
+        	
         	cache.put(k, v);
         }
         bw.write("\n");
@@ -80,6 +97,10 @@ public KeyValue addorupdateordeletekeyValue(String k,String v) {
      }
     
    return new KeyValue(k,cache.get(k));
+}
+
+public HashMap<String, String> getCache() {
+	return cache;
 }
   
 
